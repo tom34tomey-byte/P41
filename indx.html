@@ -1,0 +1,654 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>M41 -- डिटेल्ड पर्सनैलिटी प्रोफाइल</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', 'Inter', system-ui, sans-serif;
+            background: #eef2f5;
+            color: #1a1a2e;
+            padding: 20px;
+            transition: all 0.2s;
+        }
+        body.dark {
+            background: #0b0b14;
+            color: #eef2f5;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 2rem;
+            padding: 1.5rem;
+            box-shadow: 0 20px 35px -10px rgba(0,0,0,0.08);
+        }
+        body.dark .container { background: #16162a; }
+        h1 {
+            font-size: 1.6rem;
+            text-align: center;
+            background: linear-gradient(135deg, #4f46e5, #c084fc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .sub { text-align: center; color: #6c757d; font-size: 0.8rem; margin-top: 5px; }
+        .toolbar { display: flex; justify-content: flex-end; gap: 10px; margin: 20px 0 10px; flex-wrap: wrap; }
+        .tool-btn { background: #e2e8f0; border: none; padding: 5px 15px; border-radius: 40px; cursor: pointer; font-size: 0.8rem; }
+        body.dark .tool-btn { background: #2d2d44; color: white; }
+        .progress-card { background: #f8fafc; border-radius: 1rem; padding: 0.8rem; margin: 1rem 0; }
+        body.dark .progress-card { background: #1e1e32; }
+        .progress-bar-bg { background: #d1d5db; border-radius: 40px; height: 10px; }
+        .progress-fill { background: linear-gradient(90deg, #4f46e5, #c084fc); width: 0%; height: 10px; border-radius: 40px; transition: width 0.2s; }
+        .counter { display: flex; justify-content: space-between; margin-top: 6px; font-size: 0.75rem; }
+        .context-bar { background: #f1f5f9; padding: 8px 15px; border-radius: 60px; margin: 15px 0; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+        body.dark .context-bar { background: #1e1e30; }
+        .context-btn { background: transparent; border: 1px solid #94a3b8; padding: 4px 12px; border-radius: 40px; cursor: pointer; font-size: 0.75rem; }
+        .context-active { background: #4f46e5; border-color: #4f46e5; color: white; }
+        .question-card { background: white; border-radius: 1.5rem; padding: 1.2rem; margin: 1rem 0; border: 1px solid #e2e8f0; }
+        body.dark .question-card { background: #202036; border-color: #2d2d44; }
+        .qtext { font-size: 1.1rem; font-weight: 500; line-height: 1.4; }
+        .options { display: flex; flex-wrap: wrap; gap: 8px; margin: 15px 0; }
+        .opt {
+            flex: 1; min-width: 90px; background: #f1f5f9; padding: 8px 4px;
+            border-radius: 60px; text-align: center; cursor: pointer;
+            border: 1px solid #e2e8f0; font-size: 0.7rem; font-weight: 500;
+        }
+        body.dark .opt { background: #2a2a3e; border-color: #3f3f5e; }
+        .opt-selected { background: #4f46e5; color: white; }
+        .nav-buttons { display: flex; justify-content: space-between; gap: 10px; margin-top: 15px; }
+        button { background: #e2e8f0; border: none; padding: 8px 18px; border-radius: 60px; font-weight: 600; cursor: pointer; }
+        .btn-primary { background: #4f46e5; color: white; }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* ========== प्रोफाइल स्टाइल ========== */
+        .profile-container { animation: fadeIn 0.4s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .m41-header { text-align: center; margin-bottom: 1.5rem; padding: 1rem; background: linear-gradient(135deg, #4f46e520, #c084fc20); border-radius: 1.5rem; }
+        .m41-badge { display: inline-block; background: #4f46e5; color: white; padding: 5px 15px; border-radius: 40px; font-size: 0.8rem; margin-bottom: 8px; }
+        .layer-card { background: #f8fafc; border-radius: 1.2rem; padding: 1.2rem; margin-bottom: 1.2rem; border-left: 5px solid #4f46e5; transition: 0.2s; }
+        body.dark .layer-card { background: #1e1e32; }
+        .layer-header { display: flex; align-items: center; gap: 10px; margin-bottom: 0.8rem; flex-wrap: wrap; }
+        .layer-number { background: #4f46e5; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        .layer-title { font-size: 1.1rem; font-weight: 700; color: #4f46e5; }
+        .layer-icon { font-size: 1.3rem; }
+        .layer-content { padding-left: 42px; }
+        .detail-text { font-size: 0.85rem; line-height: 1.5; margin: 8px 0; color: #475569; }
+        body.dark .detail-text { color: #cbd5e1; }
+        .arrow-diagram { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 8px; margin: 12px 0; padding: 10px; background: white; border-radius: 1rem; }
+        body.dark .arrow-diagram { background: #2a2a3e; }
+        .arrow-box { text-align: center; padding: 6px 12px; background: #4f46e5; color: white; border-radius: 12px; font-size: 0.7rem; font-weight: 500; }
+        .arrow-symbol { font-size: 1.2rem; color: #4f46e5; }
+        .meter-bar { height: 8px; background: #d1d5db; border-radius: 20px; margin: 10px 0; }
+        .meter-fill { height: 8px; border-radius: 20px; width: 0%; }
+        .states-grid { display: flex; justify-content: space-between; gap: 12px; margin: 12px 0; flex-wrap: wrap; }
+        .state-card { flex: 1; text-align: center; padding: 10px; border-radius: 1rem; background: white; }
+        body.dark .state-card { background: #2a2a3e; }
+        .state-label { font-size: 0.7rem; font-weight: 600; margin-bottom: 4px; color: #6b7280; }
+        .state-value { font-size: 1rem; font-weight: 700; }
+        .func-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; margin: 12px 0; }
+        .func-item { background: white; padding: 0.5rem; border-radius: 0.8rem; }
+        body.dark .func-item { background: #2a2a3e; }
+        .func-bar-bg { height: 5px; background: #cbd5e1; border-radius: 20px; margin-top: 5px; }
+        .func-bar-fill { height: 5px; background: #4f46e5; border-radius: 20px; width: 0%; }
+        .mbti-box { text-align: center; margin: 1.2rem 0; padding: 1.2rem; background: linear-gradient(135deg, #4f46e5, #c084fc); border-radius: 1.5rem; color: white; }
+        .mbti-code { font-size: 2.8rem; font-weight: 800; letter-spacing: 4px; }
+        .mbti-name { font-size: 1rem; margin-top: 5px; }
+        .mbti-desc { font-size: 0.8rem; margin-top: 8px; opacity: 0.9; }
+        .traits-grid { display: flex; gap: 10px; margin: 10px 0; flex-wrap: wrap; }
+        .trait-tag { background: white; color: #4f46e5; padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; }
+        body.dark .trait-tag { background: #1e1e32; color: #c084fc; }
+        .explain-text { background: #fef9c3; padding: 0.7rem; border-radius: 0.8rem; margin-top: 0.6rem; font-size: 0.75rem; line-height: 1.4; }
+        body.dark .explain-text { background: #2d2a1a; color: #fde047; }
+        hr { margin: 0.8rem 0; border-color: #e2e8f0; }
+        @media (max-width: 650px) {
+            .qtext { font-size: 0.95rem; }
+            .container { padding: 1rem; }
+            .mbti-code { font-size: 1.8rem; }
+            .layer-content { padding-left: 0; }
+            .states-grid { flex-direction: column; }
+            .arrow-diagram { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+<div class="container" id="app">
+    <h1>🧠 M41 -- डायनामिक पर्सनैलिटी फ्रेमवर्क</h1>
+    <div class="sub">Mind Matrix 41 · Probabilistic Adaptive Meaning System · 110 प्रश्न</div>
+
+    <div class="toolbar">
+        <button class="tool-btn" id="darkModeBtn">🌓 डार्क/लाइट</button>
+        <button class="tool-btn" id="shareBtn">📤 शेयर</button>
+        <button class="tool-btn" id="pdfBtn">📄 PDF डाउनलोड</button>
+    </div>
+
+    <div class="progress-card">
+        <div class="progress-bar-bg"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="counter"><span>✅ प्रगति</span><span id="counterText">0 / 110</span></div>
+    </div>
+
+    <div id="contextContainer"></div>
+
+    <div id="quizPanel">
+        <div class="question-card">
+            <div class="qtext" id="questionText">लोड हो रहा...</div>
+            <div class="options" id="optionsDiv"></div>
+            <div class="nav-buttons">
+                <button id="skipBtn">⏭️ स्किप करें</button>
+                <button id="prevBtn" disabled>◀ पिछला</button>
+                <button id="nextBtn" class="btn-primary">अगला ▶</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="addonContainer" style="display: none;"></div>
+    <div id="resultContainer" style="display: none;"></div>
+</div>
+
+<script>
+    // ====================== 110 पूरे हिंदी प्रश्न ======================
+    const QUESTIONS = [
+        "🧠💤 क्या सोशल इंटरैक्शन के बाद तुम मानसिक रूप से थका हुआ महसूस करते हो?",
+        "⚡🎉 क्या ग्रुप सेटिंग्स तुम्हें ऊर्जावान महसूस कराती हैं?",
+        "🗣️👤 क्या तुम एक-से-एक बातचीत ज्यादा पसंद करते हो?",
+        "👋😊 क्या तुम नए लोगों से जल्दी घुल-मिल जाते हो?",
+        "🤔💭 क्या तुम बोलने से पहले अंदर ही अंदर सोचते हो?",
+        "🎯🎪 क्या तुम सक्रिय रूप से माहौल में जुड़े रहना पसंद करते हो?",
+        "🧘🛌 क्या तुम लंबे समय तक अकेले रहकर सहज महसूस करते हो?",
+        "🎤🗣️ क्या तुम बातचीत शुरू करने में सहज हो?",
+        "🔋🧘 क्या तुम अपनी ऊर्जा आंतरिक रूप से दोबारा भरते हो?",
+        "🏃💨 क्या तेज़-रफ्तार सामाजिक माहौल तुम्हें पसंद हैं?",
+        "🔍🧩 क्या तुम छिपे हुए पैटर्न या कनेक्शन नोटिस करते हो?",
+        "🔎📋 क्या तुम व्यावहारिक विवरण जल्दी देख लेते हो?",
+        "🌈🔮 क्या तुम कई संभावनाओं को तलाशना पसंद करते हो?",
+        "📚✅ क्या परिचित तरीके तुम्हें भरोसेमंद लगते हैं?",
+        "🔮🚀 क्या भविष्य की संभावनाएं अपने आप मन में आती रहती हैं?",
+        "🌍👣 क्या तुम वर्तमान वास्तविकता पर स्वाभाविक रूप से ध्यान केंद्रित करते हो?",
+        "💡🧠 क्या तुम अमूर्त विचारों पर चर्चा करना पसंद करते हो?",
+        "📖✋ क्या तुम वास्तविक दुनिया के व्यावहारिक उदाहरण पसंद करते हो?",
+        "🎭🔍 क्या तुम प्रतीकात्मक या लाक्षणिक अर्थ नोटिस करते हो?",
+        "📝➡️ क्या तुम कदम-दर-कदम जानकारी आसानी से फॉलो कर लेते हो?",
+        "⚖️🧠 क्या तार्किक संगति तुम्हारे लिए महत्वपूर्ण होती है?",
+        "❤️🤝 क्या निर्णय लेते समय तुम लोगों की भावनाओं को ध्यान में रखते हो?",
+        "🛠️📐 क्या तुम सिस्टम या ढाँचे बनाने का आनंद लेते हो?",
+        "📊🎯 क्या दक्षता और मापने योग्य परिणाम तुम्हारे लिए महत्वपूर्ण हैं?",
+        "🔧🧩 क्या तुम चीजों का तंत्र समझना चाहते हो?",
+        "⚡🤷 क्या तुम निर्णय जल्दी लेने में सहज हो?",
+        "⚖️📏 क्या तुम निष्पक्षता को व्यक्तिगत भावनाओं से ज्यादा महत्व देते हो?",
+        "🕊️🤝 क्या तुम भावनात्मक सद्भाव बनाए रखने की कोशिश करते हो?",
+        "❄️🧠 क्या तुम भावनात्मक रूप से कठिन निर्णय वस्तुनिष्ठ रूप से ले पाते हो?",
+        "🤗❤️ क्या तुम दूसरों को भावनात्मक समर्थन देने की प्रवृत्ति रखते हो?",
+        "😶🔥 क्या भावनाओं को खुलकर व्यक्त करना मुश्किल लगता है?",
+        "🌊🕊️ क्या तुम तनावपूर्ण स्थितियों में माहौल को शांत करने की कोशिश करते हो?",
+        "💔🎯 क्या आलोचना तुम्हें अंदर से प्रभावित करती है?",
+        "🏃💨 क्या तुम विवादों से बचने की प्रवृत्ति रखते हो?",
+        "🧘🚪 क्या भावनात्मक अधिभार में तुम अलग हो जाते हो?",
+        "🔍💓 क्या तुम दूसरों के मूड को जल्दी भांप लेते हो?",
+        "📝🧠 क्या तुम अपनी भावनाओं को निजी तौर पर प्रोसेस करते हो?",
+        "⚠️💢 क्या तुम भावनात्मक तनाव को जल्दी नोटिस कर लेते हो?",
+        "🛡️😢 क्या तुम्हें भावनात्मक रूप से कमजोर बनना मुश्किल लगता है?",
+        "🤗🌈 क्या तुम भावनात्मक रूप से सहायक माहौल पसंद करते हो?",
+        "📅✅ क्या तुम संगठित योजना पसंद करते हो?",
+        "🎲🔄 क्या तुम अचानक बदलावों को आसानी से संभाल लेते हो?",
+        "🔗🚫 क्या सख्त दिनचर्या तुम्हें बंधनकारी लगती है?",
+        "⏰✔️ क्या तुम डेडलाइन से पहले काम पूरा करते हो?",
+        "🚪🌍 क्या तुम विकल्प खुले रखना पसंद करते हो?",
+        "📆🔄 क्या तुम दैनिक एकरूपता बनाए रख सकते हो?",
+        "📅🔮 क्या तुम पहले से योजना बनाना पसंद करते हो?",
+        "⚡🎲 क्या तुम सहज निर्णयों का आनंद लेते हो?",
+        "⚠️📋 क्या अधूरा काम तुम्हें मानसिक रूप से परेशान करता है?",
+        "🌀⚖️ क्या तुम लचीलेपन को ढांचे से ज्यादा महत्व देते हो?",
+        "🔍🧠 क्या तुम अपने व्यवहार के पैटर्न देखते हो?",
+        "💪✅ क्या तुम अपनी ताकत को वास्तविक रूप से पहचान पाते हो?",
+        "🔮🎯 क्या तुम अक्सर भविष्य के लक्ष्यों की कल्पना करते हो?",
+        "📋🧾 क्या तुम जिम्मेदारियों को गंभीरता से लेते हो?",
+        "🎨🧩 क्या तुम्हारी रुचियाँ अक्सर दूसरों से अलग होती हैं?",
+        "🌍👣 क्या तुम्हें वास्तविकता में जमीन से जुड़े रहना आसान लगता है?",
+        "📈🧠 क्या तुम सक्रिय रूप से आत्म-सुधार करते हो?",
+        "😔🪞 क्या तुम अपनी कमजोरियों को स्वीकार कर पाते हो?",
+        "🏔️🧘 क्या तुम अपनी पहचान में स्थिर महसूस करते हो?",
+        "🌱🚀 क्या तुम दीर्घकालिक व्यक्तिगत विकास के बारे में सोचते हो?",
+        "🌪️💭 क्या तनाव में तुम सबसे बुरी स्थितियों की कल्पना करते हो?",
+        "🔒💢 क्या दबाव में तुम नियंत्रित या अति-उत्पादक हो जाते हो?",
+        "🎮🌀 क्या तनाव में तुम विकर्षणों की ओर चले जाते हो?",
+        "🛋️☕ क्या दबाव में तुम परिचित सुख-सुविधाएँ ढूंढते हो?",
+        "❄️🚪 क्या भावनात्मक दबाव में तुम अलग हो जाते हो?",
+        "⚡🏃 क्या तनावपूर्ण स्थितियों में तुम तुरंत कार्रवाई करते हो?",
+        "🔄🧠 क्या तनाव में तुम अति-विचार करने लगते हो?",
+        "💥😭 क्या दबाव में तुम भावनात्मक रूप से प्रतिक्रियाशील हो जाते हो?",
+        "🚪🧘 क्या तनाव में तुम सामाजिक संपर्क से बचते हो?",
+        "📋🔄 क्या तनावपूर्ण स्थितियों में तुम दिनचर्या का पालन करना पसंद करते हो?",
+        "🎭👥 क्या तुम अलग-अलग लोगों के साथ अलग व्यवहार करते हो?",
+        "😄🎉 क्या सामाजिक रूप से अभिव्यक्त होना तुम्हारे लिए स्वाभाविक है?",
+        "🛡️😶 क्या तुम अपने वास्तविक विचारों को अक्सर छिपाते हो?",
+        "🌈🤝 क्या तुम समूह के माहौल को सकारात्मक बनाए रखने की कोशिश करते हो?",
+        "🧘🛠️ क्या तुम स्वतंत्र रूप से काम करना पसंद करते हो?",
+        "🤝🌍 क्या टीमवर्क माहौल में तुम स्वाभाविक रूप से ढल जाते हो?",
+        "😞👥 क्या तुम सामाजिक रूप से गलत समझा जाना महसूस करते हो?",
+        "🎭🎛️ क्या तुम सार्वजनिक स्थितियों में अपने व्यवहार को नियंत्रित करते हो?",
+        "🔒❤️ क्या तुम भावनात्मक रूप से निजी रहना पसंद करते हो?",
+        "✅🌍 क्या तुम सामाजिक अपेक्षाओं के अनुसार ढल जाते हो?",
+        "🎯🔥 क्या तुम सार्थक लक्ष्यों का पीछा करना महत्वपूर्ण मानते हो?",
+        "💰🏠 क्या वित्तीय या जीवन स्थिरता तुम्हारे लिए महत्वपूर्ण है?",
+        "🏆📚 क्या तुम निपुणता प्राप्त करना चाहते हो?",
+        "🕊️🚀 क्या स्वतंत्रता तुम्हारे लिए पूर्वानुमेयता से अधिक महत्वपूर्ण है?",
+        "📅🎯 क्या तुम दीर्घकालिक लक्ष्यों को व्यवस्थित रूप से पूरा करते हो?",
+        "✨🆕 क्या नए अनुभव तुम्हें रोमांचक लगते हैं?",
+        "🏁⚔️ क्या तुम प्रतिस्पर्धी माहौल का आनंद लेते हो?",
+        "🔥🧠 क्या तुम आंतरिक रूप से महत्वाकांक्षी महसूस करते हो?",
+        "🏆👏 क्या तुम मान्यता या उपलब्धि को महत्व देते हो?",
+        "🌱📈 क्या तुम लगातार विकास और सुधार की तलाश करते हो?",
+        "💕🔗 क्या तुम गहरे भावनात्मक संबंधों को महत्व देते हो?",
+        "🚪🛡️ क्या तुम रिश्तों में व्यक्तिगत स्थान बनाए रखना चाहते हो?",
+        "🔒🤝 क्या निष्ठा और भरोसा तुम्हारे लिए बहुत महत्वपूर्ण हैं?",
+        "😊🎉 क्या भावनात्मक रूप से अभिव्यक्त लोग तुम्हें सहज लगते हैं?",
+        "🛠️❤️ क्या व्यावहारिक समर्थन भावनात्मक शब्दों से अधिक सार्थक लगता है?",
+        "⚔️🤝 क्या तुम विवादों को सीधे सुलझाना पसंद करते हो?",
+        "🚫🔗 क्या तुम भावनात्मक रूप से निर्भर रिश्तों से बचते हो?",
+        "⏳🤝 क्या तुम भरोसा बनाने में समय लेते हो?",
+        "🏔️❤️ क्या तुम भावनात्मक रूप से स्थिर रिश्ते पसंद करते हो?",
+        "😊💬 क्या तुम करीबी रिश्तों में भावनात्मक रूप से खुल पाते हो?",
+        "📚🧠 क्या अमूर्त सिद्धांत और अवधारणाएँ तुम्हें दिलचस्प लगती हैं?",
+        "🌍🤚 क्या व्यावहारिक वास्तविक दुनिया के अनुभव तुम्हें आकर्षित करते हैं?",
+        "🔍🧠 क्या तुम मानव व्यवहार का अक्सर विश्लेषण करते हो?",
+        "⚡🎲 क्या तेजी से बदलती स्थितियों में तुम जल्दी प्रतिक्रिया कर लेते हो?",
+        "📖💭 क्या तुम्हारी रुचि दार्शनिक या अमूर्त विषयों में है?",
+        "🔍🏞️ क्या तुम भौतिक वातावरण और विवरणों को स्वाभाविक रूप से नोटिस करते हो?",
+        "🎬🔮 क्या तुम कल्पना में भविष्य के परिदृश्य बनाते हो?",
+        "🖐️📚 क्या हाथों-हाथ सीखना तुम्हें प्रभावी लगता है?",
+        "🎭🔍 क्या तुम प्रतीकात्मक अर्थ या छिपे हुए निहितार्थ नोटिस करते हो?",
+        "🌍✅ क्या तुम वास्तविक समय के अनुभवों पर सिद्धांत से अधिक भरोसा करते हो?"
+    ];
+
+    // Full text options
+    const OPTIONS_MAP = {
+        1: "1 😠🔴 बिल्कुल नहीं (Strongly Disagree)",
+        2: "2 🙂🟠 नहीं (Disagree)",
+        3: "3 😐🟡 न्यूट्रल (Neutral)",
+        4: "4 🙂🟢 हाँ (Agree)",
+        5: "5 😊🔵 पूरी तरह हाँ (Strongly Agree)"
+    };
+
+    let answers = new Array(110).fill(null);
+    let currentIndex = 0;
+    let sectionContext = {};
+    let addon = { c1: null, c2: null, c3: null, e1: "मिनटों में", e2: "3", g1: "💼 कार्य", tvq: "" };
+
+    // Type database with details
+    const typeDatabase = {
+        "INTJ": { full: "INTJ -- रणनीतिकार (The Strategist)", traits: ["रणनीतिक", "दूरदर्शी", "स्वतंत्र", "विश्लेषणात्मक"], desc: "आप पैटर्न देखने, दीर्घकालिक योजना बनाने और जटिल समस्याओं को हल करने में माहिर हैं। आप स्वतंत्र रूप से सोचते हैं और उच्च मानक रखते हैं।" },
+        "INTP": { full: "INTP -- विचारक (The Logician)", traits: ["तार्किक", "जिज्ञासु", "नवप्रवर्तक", "अमूर्त"], desc: "आप सिद्धांतों, प्रणालियों और अमूर्त अवधारणाओं को समझना पसंद करते हैं। आप तार्किक स्थिरता और सटीकता को महत्व देते हैं।" },
+        "ENTJ": { full: "ENTJ -- कमांडर (The Commander)", traits: ["नेता", "महत्वाकांक्षी", "निर्णायक", "रणनीतिक"], desc: "आप जन्मजात नेता हैं। आप संगठन, दक्षता और दीर्घकालिक लक्ष्यों को प्राथमिकता देते हैं।" },
+        "ENTP": { full: "ENTP -- बहसबाज (The Debater)", traits: ["नवोन्मेषी", "बौद्धिक", "उत्साही", "चुनौतीपूर्ण"], desc: "आप नए विचारों और बौद्धिक बहसों से ऊर्जा लेते हैं। आप सीमाओं को चुनौती देना पसंद करते हैं।" },
+        "INFJ": { full: "INFJ -- अधिवक्ता (The Advocate)", traits: ["आदर्शवादी", "सहानुभूतिशील", "दूरदर्शी", "रचनात्मक"], desc: "आप गहरे अर्थ और उद्देश्य की तलाश करते हैं। आप दूसरों की मदद करने और सकारात्मक बदलाव लाने के लिए प्रेरित होते हैं।" },
+        "INFP": { full: "INFP -- मध्यस्थ (The Mediator)", traits: ["आदर्शवादी", "रचनात्मक", "वफादार", "सहानुभूतिशील"], desc: "आप प्रामाणिकता और व्यक्तिगत मूल्यों को महत्व देते हैं। आप रचनात्मक अभिव्यक्ति और अर्थपूर्ण संबंधों की तलाश करते हैं।" },
+        "ENFJ": { full: "ENFJ -- नायक (The Protagonist)", traits: ["करिश्माई", "प्रेरक", "सहानुभूतिशील", "सहयोगी"], desc: "आप दूसरों को प्रेरित करने और उनकी क्षमता को उजागर करने में माहिर हैं। आप सामाजिक सद्भाव को महत्व देते हैं।" },
+        "ENFP": { full: "ENFP -- योद्धा (The Campaigner)", traits: ["उत्साही", "रचनात्मक", "स्वतंत्रता-प्रेमी", "जिज्ञासु"], desc: "आप नई संभावनाओं और कनेक्शन्स से ऊर्जा लेते हैं। आप रचनात्मकता और स्वतंत्रता को महत्व देते हैं।" },
+        "ISTJ": { full: "ISTJ -- निरीक्षक (The Inspector)", traits: ["व्यावहारिक", "जिम्मेदार", "विश्वसनीय", "विस्तार-उन्मुख"], desc: "आप तथ्यों, परंपरा और व्यवस्था को महत्व देते हैं। आप जिम्मेदार और भरोसेमंद हैं।" },
+        "ISFJ": { full: "ISFJ -- रक्षक (The Defender)", traits: ["दयालु", "वफादार", "व्यावहारिक", "धैर्यवान"], desc: "आप दूसरों की सेवा करना और सद्भाव बनाए रखना पसंद करते हैं। आप विश्वसनीय और समर्पित हैं।" },
+        "ESTJ": { full: "ESTJ -- कार्यकारी (The Executive)", traits: ["व्यावहारिक", "दृढ़", "संगठित", "नेतृत्व-प्रवण"], desc: "आप दक्षता, कानून और व्यवस्था को महत्व देते हैं। आप प्राकृतिक प्रशासक हैं।" },
+        "ESFJ": { full: "ESFJ -- राजदूत (The Consul)", traits: ["मिलनसार", "सहायक", "संगठित", "लोकप्रिय"], desc: "आप सामाजिक सद्भाव और दूसरों की मदद करने पर ध्यान केंद्रित करते हैं। आप जिम्मेदार और गर्मजोशी से भरे हैं।" },
+        "ISTP": { full: "ISTP -- कारीगर (The Craftsman)", traits: ["व्यावहारिक", "साहसी", "स्वतंत्र", "समस्या-समाधानकर्ता"], desc: "आप हाथों से काम करना और समस्या-समाधान पसंद करते हैं। आप लचीले और शांत रहते हैं।" },
+        "ISFP": { full: "ISFP -- कलाकार (The Artist)", traits: ["रचनात्मक", "संवेदनशील", "सहज", "सौंदर्यबोध"], desc: "आप अपने मूल्यों और कला के माध्यम से खुद को अभिव्यक्त करते हैं। आप संवेदनशील और दयालु हैं।" },
+        "ESTP": { full: "ESTP -- उद्यमी (The Entrepreneur)", traits: ["ऊर्जावान", "साहसिक", "व्यावहारिक", "लचीला"], desc: "आप कार्रवाई और जोखिम लेना पसंद करते हैं। आप त्वरित समस्या-समाधानकर्ता हैं।" },
+        "ESFP": { full: "ESFP -- मनोरंजनकर्ता (The Entertainer)", traits: ["जीवंत", "सहज", "आशावादी", "मिलनसार"], desc: "आप लोगों को खुश करना और नए अनुभव पसंद करते हैं। आप सहज और ऊर्जावान हैं।" }
+    };
+
+    function renderContext() {
+        let sec = Math.floor(currentIndex / 10) + 1;
+        let container = document.getElementById("contextContainer");
+        if (!container) return;
+        let html = `<div class="context-bar">📌 सेक्शन ${sec} का संदर्भ चुनें: `;
+        const contexts = [
+            { id: "work", label: "💼 कार्य (Work)" },
+            { id: "home", label: "🏠 घर (Home)" },
+            { id: "social", label: "🎉 सामाजिक (Social)" },
+            { id: "alone", label: "🧘 अकेले (Alone)" },
+            { id: "general", label: "🌍 सामान्य (General)" }
+        ];
+        contexts.forEach(c => {
+            let activeClass = (sectionContext[sec] === c.id) ? "context-active" : "";
+            html += `<button data-ctx="${c.id}" class="context-btn ${activeClass}">${c.label}</button>`;
+        });
+        html += `</div>`;
+        container.innerHTML = html;
+        document.querySelectorAll("[data-ctx]").forEach(btn => {
+            btn.addEventListener("click", function() {
+                sectionContext[sec] = this.getAttribute("data-ctx");
+                renderContext();
+            });
+        });
+    }
+
+    function renderQuestion() {
+        renderContext();
+        document.getElementById("questionText").innerText = QUESTIONS[currentIndex];
+        let optsDiv = document.getElementById("optionsDiv");
+        optsDiv.innerHTML = "";
+        for (let v = 1; v <= 5; v++) {
+            let btn = document.createElement("div");
+            btn.className = "opt";
+            if (answers[currentIndex] === v) btn.classList.add("opt-selected");
+            btn.innerText = OPTIONS_MAP[v];
+            btn.onclick = (function(val) { return function() { answers[currentIndex] = val; renderQuestion(); updateProgress(); }; })(v);
+            optsDiv.appendChild(btn);
+        }
+        updateProgress();
+    }
+
+    function updateProgress() {
+        let answeredCount = 0;
+        for (let i = 0; i < 110; i++) if (answers[i] !== null) answeredCount++;
+        let percent = (answeredCount / 110) * 100;
+        document.getElementById("progressFill").style.width = percent + "%";
+        document.getElementById("counterText").innerHTML = answeredCount + " / 110";
+        let nextBtn = document.getElementById("nextBtn");
+        if (nextBtn) nextBtn.innerHTML = (answeredCount === 110) ? "✅ सबमिट करें" : "अगला ▶";
+    }
+
+    function goPrev() { if (currentIndex > 0) { currentIndex--; renderQuestion(); } document.getElementById("prevBtn").disabled = (currentIndex === 0); }
+    function skip() { if (currentIndex < 109) { currentIndex++; renderQuestion(); } else if (currentIndex === 109 && answers[currentIndex] === null) { answers[currentIndex] = 3; renderQuestion(); } document.getElementById("prevBtn").disabled = (currentIndex === 0); }
+    
+    function goNext() {
+        if (answers[currentIndex] === null && currentIndex !== 109) { alert("पहले उत्तर दें या स्किप करें"); return; }
+        if (currentIndex < 109) { currentIndex++; renderQuestion(); document.getElementById("prevBtn").disabled = false; }
+        else if (currentIndex === 109) {
+            let allAnswered = true;
+            for (let i = 0; i < 110; i++) if (answers[i] === null) { allAnswered = false; break; }
+            if (allAnswered) showAddons();
+            else alert("कृपया सभी 110 प्रश्नों के उत्तर दें");
+        }
+    }
+
+    function showAddons() {
+        document.getElementById("quizPanel").style.display = "none";
+        document.getElementById("contextContainer").style.display = "none";
+        let html = `<div style="padding:1rem; background:#faf9ff; border-radius:1.5rem; margin-top:1rem;">
+            <h3>📌 अतिरिक्त जानकारी (Layers 7-9)</h3>
+            <div class="explain-text"><strong>🔍 C1,C2,C3</strong> = Behavioral Validation &nbsp;|&nbsp; <strong>⚡ E1,E2</strong> = Energy Cost &nbsp;|&nbsp; <strong>🔥 G1</strong> = Stress Trigger &nbsp;|&nbsp; <strong>🧠 TVQ</strong> = Self-Perception</div>
+            <div><strong>C1:</strong> सोशल थकान? <span id="c1opts" class="options"></span></div>
+            <div><strong>C2:</strong> भविष्य की संभावनाएँ? <span id="c2opts" class="options"></span></div>
+            <div><strong>C3:</strong> संघर्ष से बचना? <span id="c3opts" class="options"></span></div>
+            <div><strong>E1:</strong> रिकवरी समय: <select id="e1Select"><option>मिनटों में</option><option>1-2 घंटे</option><option>आधा दिन</option><option>पूरा दिन</option></select></div>
+            <div><strong>E2:</strong> अकेले एनर्जी (1-5): <select id="e2Select">${[1,2,3,4,5].map(v => `<option value="${v}">${OPTIONS_MAP[v]}</option>`).join('')}</select></div>
+            <div><strong>G1:</strong> ग्रिप ट्रिगर: <select id="g1Select"><option>💼 कार्य</option><option>💔 संबंध</option><option>💰 वित्त</option><option>🏥 स्वास्थ्य</option></select></div>
+            <div><strong>TVQ:</strong> आपका अनुमानित टाइप: <input id="tvqInput" placeholder="INTJ, ENFP..."></div>
+            <button id="finalResultBtn" class="btn-primary" style="margin-top:1rem; width:100%;">🌟 M41 डिटेल्ड प्रोफाइल देखें</button>
+        </div>`;
+        document.getElementById("addonContainer").innerHTML = html;
+        document.getElementById("addonContainer").style.display = "block";
+        
+        for (let i = 1; i <= 5; i++) {
+            let b1 = document.createElement("div"); b1.className = "opt"; b1.innerText = OPTIONS_MAP[i];
+            b1.onclick = (function(val) { return function() { addon.c1 = val; highlightAddon("c1opts", val); }; })(i);
+            document.getElementById("c1opts").appendChild(b1);
+            let b2 = document.createElement("div"); b2.className = "opt"; b2.innerText = OPTIONS_MAP[i];
+            b2.onclick = (function(val) { return function() { addon.c2 = val; highlightAddon("c2opts", val); }; })(i);
+            document.getElementById("c2opts").appendChild(b2);
+            let b3 = document.createElement("div"); b3.className = "opt"; b3.innerText = OPTIONS_MAP[i];
+            b3.onclick = (function(val) { return function() { addon.c3 = val; highlightAddon("c3opts", val); }; })(i);
+            document.getElementById("c3opts").appendChild(b3);
+        }
+        document.getElementById("finalResultBtn").onclick = finalM41Profile;
+    }
+    
+    function highlightAddon(containerId, val) {
+        let items = document.querySelectorAll("#" + containerId + " .opt");
+        for (let i = 0; i < items.length; i++) { if (i + 1 === val) items[i].classList.add("opt-selected"); else items[i].classList.remove("opt-selected"); }
+    }
+    
+    function finalM41Profile() {
+        addon.e1 = document.getElementById("e1Select").value;
+        addon.e2 = document.getElementById("e2Select").value;
+        addon.g1 = document.getElementById("g1Select").value;
+        addon.tvq = document.getElementById("tvqInput").value;
+        
+        // 8 Cognitive Functions
+        let fnScores = { Ne: 0, Ni: 0, Se: 0, Si: 0, Te: 0, Ti: 0, Fe: 0, Fi: 0 };
+        let maps = [[11,13,17,19,101,105,107,109],[15,55,57,60,81,85,90],[12,16,20,104,106,108,110],[14,18,54,58,64,70],[23,24,27,44,62,66],[21,25,29,41,49,67],[28,32,36,38,74,80],[26,30,33,35,37,39,79,97]];
+        let names = ["Ne","Ni","Se","Si","Te","Ti","Fe","Fi"];
+        for (let i = 0; i < names.length; i++) { let total = 0, count = 0; for (let q of maps[i]) { let idx = q-1; if (answers[idx] !== null) { total += answers[idx]; count++; } } fnScores[names[i]] = count ? total / count : 3; }
+        
+        let sorted = [...names].sort((a,b) => fnScores[b] - fnScores[a]);
+        let dom = sorted[0], aux = sorted[1];
+        
+        let avgE = 0, avgN = 0, avgT = 0, avgP = 0;
+        for (let i = 0; i < 10; i++) avgE += answers[i];
+        for (let i = 10; i < 20; i++) avgN += answers[i];
+        for (let i = 20; i < 30; i++) avgT += answers[i];
+        for (let i = 40; i < 50; i++) avgP += answers[i];
+        avgE /= 10; avgN /= 10; avgT /= 10; avgP /= 10;
+        
+        let baseType = (avgE > 3 ? "I" : "E") + (avgN > 3 ? "N" : "S") + (avgT > 3 ? "F" : "T") + (avgP > 3 ? "P" : "J");
+        let typeInfo = typeDatabase[baseType] || typeDatabase["INTJ"];
+        
+        let contextCount = 0; for (let k in sectionContext) contextCount++;
+        let adaptability = (contextCount / 11) * 100;
+        let recoveryScore = addon.e1.includes("मिनट") ? 1 : (addon.e1.includes("घंटे") ? 2 : (addon.e1.includes("आधा") ? 3 : 4));
+        let recoveryText = recoveryScore === 1 ? "बहुत कम" : (recoveryScore === 2 ? "कम" : (recoveryScore === 3 ? "मध्यम" : "अधिक"));
+        let consistency = (addon.c1 && addon.c2 && addon.c3) ? ((addon.c1 + addon.c2 + addon.c3) / 15) * 100 : 50;
+        let identityStability = answers[59] ? (answers[59] / 5 * 100) : 50;
+        let selfAwareness = answers[51] ? (answers[51] / 5 * 100) : 50;
+        let reliabilityScore = (consistency + identityStability + selfAwareness) / 3;
+        let stressPattern = answers[60] > 3 ? "अति-चिंतन" : (answers[66] > 3 ? "आवेगी कार्रवाई" : "संतुलित");
+        
+        let realSelf = answers[59] ? (answers[59]/5*100) : 50;
+        let socialSelf = answers[71] ? (answers[71]/5*100) : 50;
+        let stressSelf = answers[61] ? (answers[61]/5*100) : 50;
+        
+        let funcHtml = "";
+        for (let i = 0; i < names.length; i++) {
+            let f = names[i];
+            let width = fnScores[f] * 20;
+            funcHtml += `<div class="func-item"><strong>${f}</strong><div class="func-bar-bg"><div class="func-bar-fill" style="width:${width}%"></div></div>${fnScores[f].toFixed(1)}/5</div>`;
+        }
+        
+        let traitsHtml = "";
+        for (let i = 0; i < typeInfo.traits.length; i++) {
+            traitsHtml += `<span class="trait-tag">${typeInfo.traits[i]}</span>`;
+        }
+        
+        let profileHtml = `
+            <div class="profile-container" id="profileForPDF">
+                <div class="m41-header">
+                    <div class="m41-badge">M41 · Mind Matrix 41</div>
+                    <div style="font-size:0.85rem">Probabilistic Adaptive Meaning System</div>
+                    <div style="font-size:0.7rem; margin-top:5px;">📅 ${new Date().toLocaleDateString('hi-IN')}</div>
+                </div>
+                
+                <!-- Layer 1: Core Cognitive -->
+                <div class="layer-card">
+                    <div class="layer-header"><div class="layer-number">1</div><div class="layer-icon">🧠</div><div class="layer-title">Core Cognitive Orientation -- मूल संज्ञानात्मक झुकाव</div></div>
+                    <div class="layer-content">
+                        <div class="func-grid">${funcHtml}</div>
+                        <div class="detail-text"><strong>प्रमुख (Dominant):</strong> ${dom} -- यह आपका सबसे स्वाभाविक और ऊर्जा देने वाला cognitive mode है।</div>
+                        <div class="detail-text"><strong>सहायक (Auxiliary):</strong> ${aux} -- यह आपके dominant function को संतुलित और समर्थन करता है।</div>
+                        <div class="explain-text">आपका प्राकृतिक सोचने का तरीका -- सुरक्षित और सहज स्थिति में ये patterns सक्रिय होते हैं।</div>
+                    </div>
+                </div>
+                
+                <!-- Layer 2: Adaptive Social Modes -->
+                <div class="layer-card">
+                    <div class="layer-header"><div class="layer-number">2</div><div class="layer-icon">🎭</div><div class="layer-title">Adaptive Social Modes -- सामाजिक अनुकूलन</div></div>
+                    <div class="layer-content">
+                        <div class="arrow-diagram"><div class="arrow-box">अकेले🧘</div><div class="arrow-symbol">→</div><div class="arrow-box">घर🏠</div><div class="arrow-symbol">→</div><div class="arrow-box">काम💼</div><div class="arrow-symbol">→</div><div class="arrow-box">सामाजिक🎉</div></div>
+                        <div><strong>अनुकूलन क्षमता:</strong> ${adaptability.toFixed(0)}%</div>
+                        <div class="meter-bar"><div class="meter-fill" style="width:${adaptability}%; background:#10b981"></div></div>
+                        <div class="detail-text">आप ${contextCount} अलग-अलग संदर्भों में व्यवहार बदलते हैं। जितना अधिक अनुकूलन, उतनी अधिक सामाजिक लचीलापन।</div>
+                        <div class="explain-text">यह दर्शाता है कि आप अलग-अलग लोगों और वातावरण के सामने कितना adapt होते हैं।</div>
+                    </div>
+                </div>
+                
+                <!-- Layer 3: Energy Cost -->
+                <div class="layer-card">
+                    <div class="layer-header"><div class="layer-number">3</div><div class="layer-icon">⚡</div><div class="layer-title">Energy Cost & Masking -- ऊर्जा लागत और मास्किंग</div></div>
+                    <div class="layer-content">
+                        <div class="states-grid">
+                            <div class="state-card"><div class="state-label">मास्किंग लागत</div><div class="state-value">${recoveryText}</div></div>
+                            <div class="state-card"><div class="state-label">रिकवरी समय</div><div class="state-value">${addon.e1}</div></div>
+                            <div class="state-card"><div class="state-label">अकेले एनर्जी</div><div class="state-value">${addon.e2}/5</div></div>
+                        </div>
+                        <div class="detail-text"><strong>मास्किंग लागत</strong> दिखाती है कि social performance के बाद आप कितनी ऊर्जा खो देते हैं।</div>
+                        <div class="explain-text">जितनी अधिक ऊर्जा लागत, उतना अधिक "performance" व्यवहार आप दिखाते हैं -- और उतनी अधिक अकेले समय की आवश्यकता।</div>
+                    </div>
+                </div>
+                
+                <!-- Layer 4: Stress/Shadow -->
+                <div class="layer-card">
+                    <div class="layer-header"><div class="layer-number">4</div><div class="layer-icon">🌪️</div><div class="layer-title">Stress & Shadow States -- तनाव और छाया अवस्थाएँ</div></div>
+                    <div class="layer-content">
+                        <div class="states-grid">
+                            <div class="state-card"><div class="state-label">ग्रिप ट्रिगर</div><div class="state-value">${addon.g1}</div></div>
+                            <div class="state-card"><div class="state-label">तनाव प्रतिक्रिया</div><div class="state-value">${stressPattern}</div></div>
+                        </div>
+                        <div class="detail-text"><strong>ग्रिप ट्रिगर</strong> वह तनाव है जो आपके shadow behavior को सबसे अधिक सक्रिय करता है।</div>
+                        <div class="explain-text">तनाव में आपका व्यक्तित्व शिफ्ट हो जाता है -- यह आपका shadow mode है। जब यह ट्रिगर होता है, तो आप अपने सामान्य व्यवहार से बाहर आ जाते हैं।</div>
+                    </div>
+                </div>
+                
+                <!-- Layer 5: Meaning Architecture -->
+                <div class="layer-card">
+                    <div class="layer-header"><div class="layer-number">5</div><div class="layer-icon">🎯</div><div class="layer-title">Meaning Architecture -- अर्थ संरचना</div></div>
+                    <div class="layer-content">
+                        <div class="states-grid">
+                            <div class="state-card"><div class="state-label">प्रेरणा स्रोत</div><div class="state-value">${answers[81] > 3 ? "🎯 सार्थक लक्ष्य" : "🏠 स्थिरता"}</div></div>
+                            <div class="state-card"><div class="state-label">अस्तित्वगत ड्राइव</div><div class="state-value">${answers[84] > 3 ? "🕊️ स्वतंत्रता" : "📋 पूर्वानुमेयता"}</div></div>
+                        </div>
+                        <div class="detail-text">यह आपके गहरे डर, प्रेरणा और अस्तित्वगत ड्राइव्स को दर्शाता है -- जो आपके निर्णयों को दिशा देते हैं।</div>
+                        <div class="explain-text">आपके निर्णयों के पीछे यही गहरा अर्थ ढांचा काम करता है।</div>
+                    </div>
+                </div>
+                
+                <!-- Layer 6: Identity Structure -->
+                <div class="layer-card">
+                    <div class="layer-header"><div class="layer-number">6</div><div class="layer-icon">🪞</div><div class="layer-title">Identity Structure -- पहचान संरचना</div></div>
+                    <div class="layer-content">
+                        <div class="arrow-diagram">
+                            <div class="arrow-box" style="background:#34d399">Real Self<br>${realSelf.toFixed(0)}%</div>
+                            <div class="arrow-symbol">→</div>
+                            <div class="arrow-box" style="background:#fbbf24">Social Self<br>${socialSelf.toFixed(0)}%</div>
+                            <div class="arrow-symbol">→</div>
+                            <div class="arrow-box" style="background:#f87171">Stress Self<br>${stressSelf.toFixed(0)}%</div>
+                        </div>
+                        <div><strong>पहचान स्थिरता:</strong> ${identityStability.toFixed(0)}% &nbsp;|&nbsp; <strong>स्व-अवलोकन:</strong> ${selfAwareness.toFixed(0)}%</div>
+                        <div class="detail-text"><strong>Real Self:</strong> आप वास्तव में कौन हैं। <strong>Social Self:</strong> दूसरों के सामने आप कैसे दिखते हैं। <strong>Stress Self:</strong> तनाव में आप कैसे बन जाते हैं।</div>
+                        <div class="explain-text">तीनों के बीच जितना अधिक अंतर, उतना अधिक adaptive masking।</div>
+                    </div>
+                </div>
+                
+                <!-- Layer 7: Behavioral Validation -->
+                <div class="layer-card">
+                    <div class="layer-header"><div class="layer-number">7</div><div class="layer-icon">🔬</div><div class="layer-title">Behavioral Validation -- व्यवहार सत्यापन</div></div>
+                    <div class="layer-content">
+                        <div><strong>उत्तर स्थिरता (C1-C3):</strong> ${consistency.toFixed(0)}%</div>
+                        <div class="meter-bar"><div class="meter-fill" style="width:${consistency}%; background:#f59e0b"></div></div>
+                        <div class="detail-text">C1, C2, C3 आपके consistency check हैं। यदि ये आपके पिछले उत्तरों से मेल खाते हैं, तो आपका प्रोफाइल अधिक विश्वसनीय है।</div>
+                        <div class="explain-text">Self-perception और actual behavior के बीच consistency -- जितना अधिक, उतना विश्वसनीय प्रोफाइल।</div>
+                    </div>
+                </div>
+                
+                <!-- Layer 8: Cognitive Transition -->
+                <div class="layer-card">
+                    <div class="layer-header"><div class="layer-number">8</div><div class="layer-icon">🔄</div><div class="layer-title">Cognitive Transition Mapping -- संज्ञानात्मक संक्रमण</div></div>
+                    <div class="layer-content">
+                        <div class="states-grid">
+                            <div class="state-card"><div class="state-label">स्टेट स्विच क्षमता</div><div class="state-value">${adaptability > 70 ? "उच्च ⚡" : (adaptability > 40 ? "मध्यम 🌊" : "निम्न 🪨")}</div></div>
+                            <div class="state-card"><div class="state-label">स्विच स्पीड</div><div class="state-value">${answers[42] > 3 ? "तेज़ 🚀" : "धीमी 🐢"}</div></div>
+                        </div>
+                        <div class="detail-text">आप emotional और cognitive state switching patterns -- कितनी जल्दी एक मोड से दूसरे में जाते हैं।</div>
+                        <div class="explain-text">यह आपकी mental flexibility और adaptability को दर्शाता है।</div>
+                    </div>
+                </div>
+                
+                <!-- Layer 9: Confidence & Stability -->
+                <div class="layer-card">
+                    <div class="layer-header"><div class="layer-number">9</div><div class="layer-icon">📊</div><div class="layer-title">Confidence & Stability Layer -- विश्वसनीयता परत</div></div>
+                    <div class="layer-content">
+                        <div><strong>विश्वसनीयता स्कोर:</strong> ${reliabilityScore.toFixed(0)}%</div>
+                        <div class="meter-bar"><div class="meter-fill" style="width:${reliabilityScore}%; background:#10b981"></div></div>
+                        <div class="detail-text">यह स्कोर आपके answers की consistency, self-awareness और identity stability से बना है।</div>
+                        <div class="explain-text">जितना अधिक स्कोर, उतना अधिक इस प्रोफाइल पर भरोसा किया जा सकता है।</div>
+                    </div>
+                </div>
+                
+                <!-- MBTI TYPE with full details -->
+                <div class="mbti-box">
+                    <div class="mbti-code">${baseType}</div>
+                    <div class="mbti-name">${typeInfo.full}</div>
+                    <div class="traits-grid">${traitsHtml}</div>
+                    <div class="mbti-desc">${typeInfo.desc}</div>
+                    <div style="font-size:0.7rem; margin-top:10px; opacity:0.8;">⚡ यह आपका बेस पैटर्न है -- सामान्य परिस्थितियों में सक्रिय रहने वाला core cognitive type</div>
+                </div>
+                
+                <!-- Addon Summary with explanation -->
+                <div class="explain-text" style="margin-top:1rem;">
+                    <strong>📋 अतिरिक्त परिणाम (Add-on Data):</strong><br>
+                    🔄 <strong>C1=${addon.c1 || '?'} C2=${addon.c2 || '?'} C3=${addon.c3 || '?'}</strong> -- Behavioral Validation (स्थिरता जांच)<br>
+                    ⚡ <strong>E1=${addon.e1} &nbsp; E2=${addon.e2}/5</strong> -- Energy Cost & Recovery (ऊर्जा लागत और पुनःप्राप्ति)<br>
+                    🔥 <strong>G1=${addon.g1}</strong> -- Stress/Shadow Trigger (तनाव ट्रिगर)<br>
+                    🧠 <strong>आपका स्व-अनुमानित टाइप: ${addon.tvq || "नहीं बताया"}</strong> -- इसकी तुलना ${baseType} ${typeInfo.full} से करें।<br>
+                    <span style="font-size:0.7rem;">💡 यदि दोनों मेल खाते हैं, तो आपकी self-awareness उच्च है। यदि नहीं, तो यह आपके "सामाजिक व्यवहार" और "वास्तविक स्व" के बीच अंतर दिखाता है।</span>
+                </div>
+                
+                <button id="restartBtn" style="background:#4f46e5; color:white; width:100%; margin-top:1rem; padding:12px; border-radius:60px; font-weight:bold;">🔄 नया टेस्ट शुरू करें</button>
+            </div>
+        `;
+        
+        document.getElementById("addonContainer").style.display = "none";
+        document.getElementById("resultContainer").innerHTML = profileHtml;
+        document.getElementById("resultContainer").style.display = "block";
+        document.getElementById("restartBtn").addEventListener("click", function() { location.reload(); });
+    }
+    
+    function downloadPDF() {
+        const profileContent = document.getElementById("resultContainer").innerHTML;
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write(`
+            <html>
+                <head>
+                    <title>M41 Personality Profile</title>
+                    <meta charset="UTF-8">
+                    <style>
+                        * { margin: 0; padding: 0; box-sizing: border-box; }
+                        body { font-family: 'Segoe UI', 'Inter', sans-serif; background: white; padding: 20px; }
+                        .layer-card { margin-bottom: 15px; border-left: 4px solid #4f46e5; padding: 12px; background: #f8fafc; border-radius: 12px; }
+                        .mbti-box { background: linear-gradient(135deg, #4f46e5, #c084fc); color: white; padding: 15px; border-radius: 20px; text-align: center; margin: 15px 0; }
+                        .mbti-code { font-size: 2rem; font-weight: bold; }
+                        .func-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; margin: 10px 0; }
+                        .func-item { background: white; padding: 6px; border-radius: 8px; }
+                        .func-bar-bg { height: 4px; background: #ddd; border-radius: 10px; margin-top: 4px; }
+                        .func-bar-fill { height: 4px; background: #4f46e5; border-radius: 10px; }
+                        .meter-bar { height: 6px; background: #ddd; border-radius: 10px; margin: 6px 0; }
+                        .meter-fill { height: 6px; border-radius: 10px; }
+                        .states-grid, .traits-grid { display: flex; gap: 10px; flex-wrap: wrap; margin: 10px 0; }
+                        .state-card, .trait-tag { background: white; padding: 8px; border-radius: 10px; text-align: center; flex: 1; }
+                        .arrow-diagram { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
+                        .arrow-box { background: #4f46e5; color: white; padding: 4px 10px; border-radius: 12px; font-size: 0.7rem; }
+                        .explain-text { background: #fef9c3; padding: 8px; border-radius: 8px; margin-top: 8px; font-size: 0.7rem; }
+                        .detail-text { font-size: 0.8rem; margin: 5px 0; }
+                        .layer-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+                        .layer-number { background: #4f46e5; color: white; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+                        .layer-title { font-size: 1rem; font-weight: bold; color: #4f46e5; }
+                    </style>
+                </head>
+                <body>${profileContent.replace('<button id="restartBtn" style="background:#4f46e5; color:white; width:100%; margin-top:1rem; padding:12px; border-radius:60px; font-weight:bold;">🔄 नया टेस्ट शुरू करें</button>', '')}</body>
+            </html>
+        `);
+        printWindow.document.close();
+        printWindow.print();
+    }
+    
+    document.getElementById("prevBtn").addEventListener("click", goPrev);
+    document.getElementById("nextBtn").addEventListener("click", goNext);
+    document.getElementById("skipBtn").addEventListener("click", skip);
+    document.getElementById("darkModeBtn").addEventListener("click", function() { document.body.classList.toggle("dark"); });
+    document.getElementById("shareBtn").addEventListener("click", function() { alert("शेयर करें: " + window.location.href); });
+    document.getElementById("pdfBtn").addEventListener("click", downloadPDF);
+    
+    renderQuestion();
+    document.getElementById("prevBtn").disabled = true;
+</script>
+</body>
+</html>
